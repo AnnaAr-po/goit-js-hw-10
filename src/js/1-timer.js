@@ -4,6 +4,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 let userSelectedDate = null;
+let countDown = null;
 
 const dateTimePicker = document.querySelector('#datetime-picker');
 const startButton = document.querySelector('button[data-start]');
@@ -32,7 +33,7 @@ const options = {
   },
 };
 
-flatpickr('#datetime-picker', options);
+flatpickr(dateTimePicker, options);
 
 startButton.addEventListener('click', startTimer);
 
@@ -40,16 +41,17 @@ function startTimer() {
   startButton.disabled = true;
   dateTimePicker.disabled = true;
 
-  const countdown = setInterval(() => {
+  countDown = setInterval(() => {
     const otherTime = userSelectedDate - new Date();
 
     if (otherTime <= 0) {
-      clearInterval(countdown);
+      clearInterval(countDown);
       updateTimer(0, 0, 0, 0);
       dateTimePicker.disabled = false;
       return;
     }
-    updateTimer(convertMs(otherTime));
+    const time = convertMs(otherTime);
+    updateTimer(time.days, time.hours, time.minutes, time.seconds);
   }, 1000);
 }
 
